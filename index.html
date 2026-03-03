@@ -7,68 +7,126 @@
 
 <link rel="stylesheet" href="style.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 
 <body>
 
-<div class="container">
+<div class="app">
 
-<h1>Sistema Oficial de Distribuição de Auxílio</h1>
+<header>
+<h1>Prestação de Contas Oficial</h1>
+<p>Sistema proporcional com regra 70/30 por excedente de dias</p>
+</header>
 
-<div id="etapa1" class="etapa ativa">
-<h2>Etapa 1 - Introdução</h2>
-<p>
-Este sistema realiza a distribuição do auxílio de forma proporcional
-ao valor financeiro real de cada rota.
-</p>
+<section class="card">
+<h2>Informações Gerais</h2>
 
-<ul>
-<li>Baseado em diária × quantidade de dias</li>
-<li>Distribuição proporcional</li>
-<li>Proteção contra divisão por zero</li>
-</ul>
-
-<button onclick="proximaEtapa(1)">Iniciar</button>
-</div>
-
-<div id="etapa2" class="etapa">
-<h2>Etapa 2 - Cadastro do Auxílio</h2>
-
-<label>Mês de Referência</label>
+<label>Mês de referência</label>
 <input type="month" id="mes">
 
-<label>Valor Total do Auxílio</label>
+<label>Valor total do auxílio (R$)</label>
 <input type="number" id="auxilio">
 
-<button onclick="validarEtapa2()">Próxima Etapa</button>
+<label>Aplicar regra 70/30 no excedente?</label>
+<select id="usarRegra">
+<option value="sim">Sim</option>
+<option value="nao">Não</option>
+</select>
+</section>
+
+<section class="grid">
+
+<div class="rota card">
+<h2>Rota 7 Lagoas</h2>
+
+<label>Valor da passagem</label>
+<input type="number" id="passagem0">
+
+<label>Quantidade de veículos</label>
+<input type="number" id="veiculos0">
+
+<label>Valor da diária por veículo</label>
+<input type="number" id="diaria0">
+
+<label>Dias rodados</label>
+<input type="number" id="dias0">
+
+<label>Alunos integrais</label>
+<input type="number" id="integral0">
+
+<label>Alunos com desconto 1</label>
+<input type="number" id="descAlunos0">
+
+<label>% desconto 1</label>
+<input type="number" id="descPerc0">
+
+<label>Possui desconto 2?</label>
+<select id="temDesc2_0" onchange="toggleDesc2(0)">
+<option value="nao">Não</option>
+<option value="sim">Sim</option>
+</select>
+
+<div id="desc2_0" class="hidden">
+<label>Alunos desconto 2</label>
+<input type="number" id="desc2Alunos0">
+<label>% desconto 2</label>
+<input type="number" id="desc2Perc0">
+</div>
 </div>
 
-<div id="etapa3" class="etapa">
-<h2>Etapa 3 - Cadastro das Rotas</h2>
+<div class="rota card">
+<h2>Rota Curvelo</h2>
 
-<div id="rotas"></div>
-<button onclick="adicionarRota()">Adicionar Rota</button>
+<label>Valor da passagem</label>
+<input type="number" id="passagem1">
 
-<button onclick="proximaEtapa(3)">Próxima Etapa</button>
+<label>Quantidade de veículos</label>
+<input type="number" id="veiculos1">
+
+<label>Valor da diária por veículo</label>
+<input type="number" id="diaria1">
+
+<label>Dias rodados</label>
+<input type="number" id="dias1">
+
+<label>Alunos integrais</label>
+<input type="number" id="integral1">
+
+<label>Alunos com desconto 1</label>
+<input type="number" id="descAlunos1">
+
+<label>% desconto 1</label>
+<input type="number" id="descPerc1">
+
+<label>Possui desconto 2?</label>
+<select id="temDesc2_1" onchange="toggleDesc2(1)">
+<option value="nao">Não</option>
+<option value="sim">Sim</option>
+</select>
+
+<div id="desc2_1" class="hidden">
+<label>Alunos desconto 2</label>
+<input type="number" id="desc2Alunos1">
+<label>% desconto 2</label>
+<input type="number" id="desc2Perc1">
+</div>
 </div>
 
-<div id="etapa4" class="etapa">
-<h2>Etapa 4 - Resultado</h2>
+</section>
 
+<button class="btn" onclick="calcular()">Calcular</button>
+<button class="btn verde" onclick="gerarPDF()">Gerar PDF Oficial</button>
+
+<section class="card">
+<h2>Resultado</h2>
 <div id="resultado"></div>
+</section>
 
-<canvas id="graficoBarra"></canvas>
-<canvas id="graficoPizza"></canvas>
-
-<button onclick="proximaEtapa(4)">Gerar Relatório</button>
-</div>
-
-<div id="etapa5" class="etapa">
-<h2>Etapa 5 - Relatório Oficial</h2>
-
-<div id="relatorio"></div>
-
-</div>
+<section class="charts">
+<canvas id="graficoFinanceiro"></canvas>
+<canvas id="graficoAuxilio"></canvas>
+</section>
 
 </div>
 
