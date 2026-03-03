@@ -1,110 +1,130 @@
 let rotas = [];
-let graficoBarra;
-let graficoPizza;
 
 function adicionarRota() {
-
     const id = rotas.length;
 
     const div = document.createElement("div");
-    div.className = "rotaCard";
+    div.className = "card";
 
     div.innerHTML = `
-        <h3>Rota ${id+1}</h3>
-        <input type="text" id="nome${id}" placeholder="Nome da rota">
-        <input type="number" id="diaria${id}" placeholder="Valor da diária">
-        <input type="number" id="dias${id}" placeholder="Qtd diárias">
+        <h3>Rota ${id + 1}</h3>
+        <label>Nome da Rota</label>
+        <input type="text" id="nome${id}">
+
+        <label>Valor da Diária (R$)</label>
+        <input type="number" id="diaria${id}">
+
+        <label>Quantidade de Diárias</label>
+        <input type="number" id="dias${id}">
+
+        <label>Total de Alunos</label>
+        <input type="number" id="alunos${id}">
+
+        <label>Número de Alunos com Desconto 1</label>
+        <input type="number" id="alunosDesc1_${id}">
+
+        <label>Percentual Desconto 1 (%)</label>
+        <input type="number" id="desc1_${id}">
+
+        <label>Possui segundo desconto?</label>
+        <input type="checkbox" id="temDesc2_${id}" onchange="toggleDesc2(${id})">
+
+        <div id="desc2Area_${id}" style="display:none;">
+            <label>Número de Alunos com Desconto 2</label>
+            <input type="number" id="alunosDesc2_${id}">
+            
+            <label>Percentual Desconto 2 (%)</label>
+            <input type="number" id="desc2_${id}">
+        </div>
     `;
 
     document.getElementById("rotas").appendChild(div);
     rotas.push(id);
+}
 
-    document.getElementById("kpiRotas").innerText = rotas.length;
+function toggleDesc2(id){
+    const area = document.getElementById(`desc2Area_${id}`);
+    const check = document.getElementById(`temDesc2_${id}`);
+    area.style.display = check.checked ? "block" : "none";
 }
 
 function calcular(){
 
-    const auxilio = parseFloat(document.getElementById("auxilio").value) || 0;
+    const auxilio = parseFloat(document.getElementById("auxilio").value);
     let totalGeral = 0;
-    let nomes = [];
-    let valores = [];
+    let dados = [];
 
     rotas.forEach(id => {
 
-        const nome = document.getElementById(`nome${id}`).value || `Rota ${id+1}`;
+        const nome = document.getElementById(`nome${id}`).value;
         const diaria = parseFloat(document.getElementById(`diaria${id}`).value) || 0;
         const dias = parseFloat(document.getElementById(`dias${id}`).value) || 0;
 
-        const valor = diaria * dias;
+        const valorTotal = diaria * dias;
 
-        totalGeral += valor;
-        nomes.push(nome);
-        valores.push(valor);
+        totalGeral += valorTotal;
+
+        dados.push({
+            nome,
+            valorTotal
+        });
     });
 
     if(totalGeral === 0){
-        alert("Total geral não pode ser zero.");
+        alert("Erro: Total geral não pode ser zero.");
         return;
     }
 
-    document.getElementById("kpiTotal").innerText =
-        "R$ " + totalGeral.toFixed(2);
+    let resultadoHTML = "<h2>Resultado Oficial</h2>";
 
-    document.getElementById("kpiAuxilio").innerText =
-        "R$ " + auxilio.toFixed(2);
+    dados.forEach(ro => {
 
-    atualizarGraficos(nomes, valores);
+        const percentual = ro.valorTotal / totalGeral;
+        const valorAuxilio = percentual * auxilio;
+
+        resultadoHTML += `
+            <p><strong>${ro.nome}</strong><br>
+            Valor Financeiro: R$ ${ro.valorTotal.toFixed(2)}<br>
+            Percentual: ${(percentual*100).toFixed(2)}%<br>
+            Auxílio Recebido: R$ ${valorAuxilio.toFixed(2)}</p>
+        `;
+    });
+
+    document.getElementById("resultado").innerHTML = resultadoHTML;
+
+    gerarGraficos(dados, totalGeral);
 }
 
-function atualizarGraficos(nomes, valores){
+function gerarGraficos(dados, totalGeral){
 
-    if(graficoBarra) graficoBarra.destroy();
-    if(graficoPizza) graficoPizza.destroy();
+    const nomes = dados.map(d => d.nome);
+    const valores = dados.map(d => d.valorTotal);
+    const percentuais = dados.map(d => (d.valorTotal / totalGeral) * 100);
 
-    graficoBarra = new Chart(
-        document.getElementById("graficoBarra"),
-        {
-            type: 'bar',
-            data: {
-                labels: nomes,
-                datasets: [{
-                    label: "Valor Financeiro",
-                    data: valores
-                }]
-            },
-            options: {
-                animation: {
-                    duration: 1500
-                }
-            }
+    new Chart(document.getElementById("graficoFinanceiro"), {
+        type: 'bar',
+        data: {
+            labels: nomes,
+            datasets: [{
+                label: "Valor Financeiro por Rota",
+                data: valores
+            }]
         }
-    );
+    });
 
-    graficoPizza = new Chart(
-        document.getElementById("graficoPizza"),
-        {
-            type: 'pie',
-            data: {
-                labels: nomes,
-                datasets: [{
-                    data: valores
-                }]
-            },
-            options: {
-                animation: {
-                    animateScale: true
-                }
-            }
+    new Chart(document.getElementById("graficoPercentual"), {
+        type: 'pie',
+        data: {
+            labels: nomes,
+            datasets: [{
+                label: "Percentual",
+                data: percentuais
+            }]
         }
-    );
-}Com desconto CV: R$ ${valorDescCV.toFixed(2)}
-`;
+    });
 }
 
 function gerarPDF(){
-const { jsPDF }=window.jspdf;
-let doc=new jsPDF();
-doc.text("Relatório Completo de Transparência",10,10);
-doc.text(document.getElementById("relatorio").innerText,10,20);
-doc.save("relatorio_transporte.pdf");
+    const elemento = document.body;
+    html2pdf().from(elemento).save("Prestacao_de_Contas_Oficial.pdf");
 }
