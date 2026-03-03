@@ -1,130 +1,106 @@
 let rotas = [];
+let graficoBarra;
+let graficoPizza;
 
-function adicionarRota() {
+function proximaEtapa(atual){
+    document.getElementById("etapa"+atual).classList.remove("ativa");
+    document.getElementById("etapa"+(atual+1)).classList.add("ativa");
+}
+
+function validarEtapa2(){
+    const auxilio = document.getElementById("auxilio").value;
+    if(auxilio <= 0){
+        alert("Informe um valor válido de auxílio.");
+        return;
+    }
+    proximaEtapa(2);
+}
+
+function adicionarRota(){
+
     const id = rotas.length;
 
     const div = document.createElement("div");
-    div.className = "card";
+    div.className = "rota";
 
     div.innerHTML = `
-        <h3>Rota ${id + 1}</h3>
-        <label>Nome da Rota</label>
-        <input type="text" id="nome${id}">
-
-        <label>Valor da Diária (R$)</label>
-        <input type="number" id="diaria${id}">
-
-        <label>Quantidade de Diárias</label>
-        <input type="number" id="dias${id}">
-
-        <label>Total de Alunos</label>
-        <input type="number" id="alunos${id}">
-
-        <label>Número de Alunos com Desconto 1</label>
-        <input type="number" id="alunosDesc1_${id}">
-
-        <label>Percentual Desconto 1 (%)</label>
-        <input type="number" id="desc1_${id}">
-
-        <label>Possui segundo desconto?</label>
-        <input type="checkbox" id="temDesc2_${id}" onchange="toggleDesc2(${id})">
-
-        <div id="desc2Area_${id}" style="display:none;">
-            <label>Número de Alunos com Desconto 2</label>
-            <input type="number" id="alunosDesc2_${id}">
-            
-            <label>Percentual Desconto 2 (%)</label>
-            <input type="number" id="desc2_${id}">
-        </div>
+        <h4>Rota ${id+1}</h4>
+        <input type="text" id="nome${id}" placeholder="Nome da rota">
+        <input type="number" id="diaria${id}" placeholder="Valor da diária">
+        <input type="number" id="dias${id}" placeholder="Quantidade de dias">
     `;
 
     document.getElementById("rotas").appendChild(div);
     rotas.push(id);
 }
 
-function toggleDesc2(id){
-    const area = document.getElementById(`desc2Area_${id}`);
-    const check = document.getElementById(`temDesc2_${id}`);
-    area.style.display = check.checked ? "block" : "none";
-}
-
 function calcular(){
 
     const auxilio = parseFloat(document.getElementById("auxilio").value);
     let totalGeral = 0;
-    let dados = [];
+    let nomes = [];
+    let valores = [];
 
-    rotas.forEach(id => {
+    rotas.forEach(id=>{
+        const nome = document.getElementById("nome"+id).value;
+        const diaria = parseFloat(document.getElementById("diaria"+id).value)||0;
+        const dias = parseFloat(document.getElementById("dias"+id).value)||0;
 
-        const nome = document.getElementById(`nome${id}`).value;
-        const diaria = parseFloat(document.getElementById(`diaria${id}`).value) || 0;
-        const dias = parseFloat(document.getElementById(`dias${id}`).value) || 0;
+        const total = diaria*dias;
 
-        const valorTotal = diaria * dias;
-
-        totalGeral += valorTotal;
-
-        dados.push({
-            nome,
-            valorTotal
-        });
+        totalGeral += total;
+        nomes.push(nome);
+        valores.push(total);
     });
 
-    if(totalGeral === 0){
-        alert("Erro: Total geral não pode ser zero.");
+    if(totalGeral===0){
+        alert("Total geral não pode ser zero.");
         return;
     }
 
-    let resultadoHTML = "<h2>Resultado Oficial</h2>";
+    let resultadoHTML = "";
 
-    dados.forEach(ro => {
+    valores.forEach((valor,i)=>{
+        const percentual = valor/totalGeral;
+        const aux = percentual*auxilio;
 
-        const percentual = ro.valorTotal / totalGeral;
-        const valorAuxilio = percentual * auxilio;
-
-        resultadoHTML += `
-            <p><strong>${ro.nome}</strong><br>
-            Valor Financeiro: R$ ${ro.valorTotal.toFixed(2)}<br>
-            Percentual: ${(percentual*100).toFixed(2)}%<br>
-            Auxílio Recebido: R$ ${valorAuxilio.toFixed(2)}</p>
+        resultadoHTML+=`
+        <p><strong>${nomes[i]}</strong><br>
+        Total Financeiro: R$ ${valor.toFixed(2)}<br>
+        Percentual: ${(percentual*100).toFixed(2)}%<br>
+        Auxílio: R$ ${aux.toFixed(2)}</p>
         `;
     });
 
-    document.getElementById("resultado").innerHTML = resultadoHTML;
+    document.getElementById("resultado").innerHTML=resultadoHTML;
 
-    gerarGraficos(dados, totalGeral);
+    gerarGraficos(nomes,valores);
 }
 
-function gerarGraficos(dados, totalGeral){
+function gerarGraficos(nomes,valores){
 
-    const nomes = dados.map(d => d.nome);
-    const valores = dados.map(d => d.valorTotal);
-    const percentuais = dados.map(d => (d.valorTotal / totalGeral) * 100);
+    if(graficoBarra) graficoBarra.destroy();
+    if(graficoPizza) graficoPizza.destroy();
 
-    new Chart(document.getElementById("graficoFinanceiro"), {
-        type: 'bar',
-        data: {
-            labels: nomes,
-            datasets: [{
-                label: "Valor Financeiro por Rota",
-                data: valores
-            }]
+    graficoBarra=new Chart(
+        document.getElementById("graficoBarra"),
+        {
+            type:'bar',
+            data:{
+                labels:nomes,
+                datasets:[{data:valores}]
+            }
         }
-    });
+    );
 
-    new Chart(document.getElementById("graficoPercentual"), {
-        type: 'pie',
-        data: {
-            labels: nomes,
-            datasets: [{
-                label: "Percentual",
-                data: percentuais
-            }]
+    graficoPizza=new Chart(
+        document.getElementById("graficoPizza"),
+        {
+            type:'pie',
+            data:{
+                labels:nomes,
+                datasets:[{data:valores}]
+            }
         }
-    });
-}
-
-function gerarPDF(){
-    const elemento = document.body;
-    html2pdf().from(elemento).save("Prestacao_de_Contas_Oficial.pdf");
+    );
 }
