@@ -1,48 +1,83 @@
-body {
-    font-family: Arial, sans-serif;
-    background: #f4f6f9;
-    margin: 0;
-    padding: 20px;
+body{
+margin:0;
+font-family:'Segoe UI',sans-serif;
+background:linear-gradient(135deg,#1e3c72,#2a5298);
+color:white;
 }
 
-.container {
-    max-width: 800px;
-    margin: auto;
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
+.app{
+max-width:1200px;
+margin:auto;
+padding:20px;
 }
 
-.etapa {
-    display: none;
+header{
+text-align:center;
+margin-bottom:20px;
 }
 
-.etapa.ativa {
-    display: block;
+.card{
+background:rgba(255,255,255,0.08);
+padding:20px;
+border-radius:16px;
+backdrop-filter:blur(12px);
+margin-bottom:20px;
+box-shadow:0 10px 30px rgba(0,0,0,0.3);
 }
 
-input {
-    width: 100%;
-    padding: 8px;
-    margin: 5px 0 15px;
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:20px;
 }
 
-button {
-    padding: 8px 15px;
-    background: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+@media(max-width:900px){
+.grid{
+grid-template-columns:1fr;
+}
 }
 
-button:hover {
-    opacity: 0.9;
+input,select{
+width:100%;
+padding:8px;
+margin-bottom:12px;
+border-radius:8px;
+border:none;
 }
 
-.rota {
-    background: #f0f0f0;
-    padding: 10px;
-    margin: 10px 0;
-    border-radius: 6px;
+.btn{
+padding:12px 20px;
+margin:10px 10px 20px 0;
+border:none;
+border-radius:10px;
+cursor:pointer;
+background:#00c6ff;
+color:white;
+font-weight:bold;
+}
+
+.btn.verde{
+background:#00ff94;
+color:black;
+}
+
+.hidden{
+display:none;
+}
+
+.charts{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:20px;
+}
+
+@media(max-width:900px){
+.charts{
+grid-template-columns:1fr;
+}
+canvas{
+background:white;
+border-radius:12px;
+padding:10px;
+}
 }
