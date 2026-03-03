@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Transparência Transporte Universitário</title>
+
+<link rel="stylesheet" href="style.css">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+
+<body>
+
+<div class="container">
+
+<section id="home" class="active fade">
+<h1>Transparência do Transporte Universitário</h1>
+
+<p>
+Este sistema foi criado para informar de forma transparente os valores das rotas:
+<b>Sete Lagoas</b> e <b>Curvelo</b>.
+</p>
+
+<p>
+A divisão do auxílio é feita de forma imparcial, baseada:
+</p>
+
+<ul>
+<li>Valor real das diárias</li>
+<li>Número de dias rodados</li>
+<li>Regra 70% para quem rodou no dia</li>
+<li>30% para quem não rodou</li>
+</ul>
+
+<button class="btn-primary" onclick="goToCadastro()">Iniciar Cálculo</button>
+</section>
+
+<section id="cadastro" class="fade">
+
+<h2>Cadastro de Dados</h2>
+
+<div class="card">
+<label>Período:</label>
+<input type="month" id="periodo">
+
+<label>Valor Total de Auxílio:</label>
+<input type="number" id="auxilio">
+</div>
+
+<div class="grid">
+
+<div class="card">
+<h3>Rota Sete Lagoas</h3>
+<div id="veiculosSL"></div>
+<button onclick="addVeiculo('SL')" class="btn-secondary">Adicionar Veículo</button>
+
+<input type="number" id="passSL" placeholder="Total Passagens">
+<input type="number" id="intSL" placeholder="Alunos Integrais">
+<input type="number" id="descQtdSL" placeholder="Qtd Alunos com Desconto">
+<input type="number" id="descSL" placeholder="% Desconto">
+</div>
+
+<div class="card">
+<h3>Rota Curvelo</h3>
+<div id="veiculosCV"></div>
+<button onclick="addVeiculo('CV')" class="btn-secondary">Adicionar Veículo</button>
+
+<input type="number" id="passCV" placeholder="Total Passagens">
+<input type="number" id="intCV" placeholder="Alunos Integrais">
+<input type="number" id="descQtdCV" placeholder="Qtd Alunos com Desconto">
+<input type="number" id="descCV" placeholder="% Desconto">
+</div>
+
+</div>
+
+<button class="btn-primary" onclick="calcular()">Calcular</button>
+
+</section>
+
+<section id="resultado" class="fade">
+<h2>Resultado Final</h2>
+
+<div id="resultadoTexto"></div>
+
+<canvas id="grafico"></canvas>
+
+<button class="btn-primary" onclick="gerarPDF()">Baixar PDF</button>
+
+</section>
+
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
