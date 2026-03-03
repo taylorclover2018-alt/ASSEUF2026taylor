@@ -3,59 +3,43 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard Financeiro Oficial</title>
+<title>Sistema Oficial de Prestação de Contas</title>
 
 <link rel="stylesheet" href="style.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 
 <body>
 
-<div class="layout">
+<div class="container">
 
-    <aside class="sidebar">
-        <h2>Financeiro</h2>
-        <p>Sistema Oficial</p>
-    </aside>
+<h1>Sistema Oficial de Prestação de Contas</h1>
 
-    <main class="main">
+<div class="card">
+<label>Mês de Referência</label>
+<input type="month" id="mes">
+</div>
 
-        <header>
-            <h1>Dashboard de Prestação de Contas</h1>
-        </header>
+<div class="card">
+<label>Valor Total do Auxílio (R$)</label>
+<input type="number" id="auxilio" placeholder="Ex: 15000">
+</div>
 
-        <section class="kpis">
-            <div class="kpi">
-                <h3>Total Geral</h3>
-                <p id="kpiTotal">R$ 0,00</p>
-            </div>
+<h2>Rotas</h2>
+<div id="rotas"></div>
 
-            <div class="kpi">
-                <h3>Total Auxílio</h3>
-                <p id="kpiAuxilio">R$ 0,00</p>
-            </div>
+<button onclick="adicionarRota()">+ Adicionar Rota</button>
 
-            <div class="kpi">
-                <h3>Rotas</h3>
-                <p id="kpiRotas">0</p>
-            </div>
-        </section>
+<button class="calcular" onclick="calcular()">Calcular Distribuição</button>
 
-        <section class="formulario">
-            <input type="number" id="auxilio" placeholder="Valor total do auxílio">
-            <button onclick="adicionarRota()">Adicionar Rota</button>
-        </section>
+<div id="resultado"></div>
 
-        <div id="rotas"></div>
+<canvas id="graficoFinanceiro"></canvas>
+<canvas id="graficoPercentual"></canvas>
 
-        <button class="btnCalcular" onclick="calcular()">Calcular</button>
+<button class="pdf" onclick="gerarPDF()">Gerar PDF Oficial</button>
 
-        <section class="graficos">
-            <canvas id="graficoBarra"></canvas>
-            <canvas id="graficoPizza"></canvas>
-        </section>
-
-    </main>
 </div>
 
 <script src="app.js"></script>
