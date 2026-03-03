@@ -1,61 +1,48 @@
 body {
-    font-family: 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    font-family: Arial, sans-serif;
+    background: #f4f6f9;
     margin: 0;
-    padding: 0;
-    color: white;
-}
-
-.container {
-    max-width: 1000px;
-    margin: auto;
     padding: 20px;
 }
 
-h1, h2 {
-    text-align: center;
+.container {
+    max-width: 800px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
 }
 
-.card {
-    background: rgba(255,255,255,0.1);
-    padding: 15px;
-    margin: 10px 0;
-    border-radius: 12px;
-    backdrop-filter: blur(10px);
+.etapa {
+    display: none;
+}
+
+.etapa.ativa {
+    display: block;
 }
 
 input {
     width: 100%;
     padding: 8px;
-    margin-top: 5px;
-    border-radius: 8px;
-    border: none;
+    margin: 5px 0 15px;
 }
 
 button {
-    padding: 10px 15px;
-    border-radius: 10px;
+    padding: 8px 15px;
+    background: #007bff;
+    color: white;
     border: none;
-    margin: 10px 5px;
+    border-radius: 5px;
     cursor: pointer;
-    font-weight: bold;
-}
-
-button.calcular {
-    background: #00c6ff;
-}
-
-button.pdf {
-    background: #00ff9d;
 }
 
 button:hover {
     opacity: 0.9;
 }
 
-#resultado {
-    background: rgba(0,0,0,0.3);
-    padding: 15px;
-    margin-top: 15px;
-    border-radius: 10px;
+.rota {
+    background: #f0f0f0;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 6px;
 }
