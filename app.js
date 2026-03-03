@@ -1,14 +1,19 @@
-function goToCadastro(){
+function irCadastro(){
 document.getElementById("home").classList.remove("active");
 document.getElementById("cadastro").classList.add("active");
 }
 
+function voltar(){
+document.getElementById("resultado").classList.remove("active");
+document.getElementById("cadastro").classList.add("active");
+}
+
 function addVeiculo(tipo){
-let div = document.createElement("div");
+let div=document.createElement("div");
 div.innerHTML=`
-<input placeholder="Nome Veículo">
-<input type="number" class="valor" placeholder="Valor Diária">
-<input type="number" class="dias" placeholder="Dias Utilizados">
+<input placeholder="Nome do veículo">
+<input type="number" class="valor" placeholder="Valor da diária">
+<input type="number" class="dias" placeholder="Dias utilizados">
 `;
 document.getElementById(tipo==="SL"?"veiculosSL":"veiculosCV").appendChild(div);
 }
@@ -35,68 +40,84 @@ let auxTotal=parseFloat(auxilio.value)||0;
 let SL=somar(document.getElementById("veiculosSL"));
 let CV=somar(document.getElementById("veiculosCV"));
 
-let totalDias=SL.totalDias+CV.totalDias;
+let maiorDias=Math.max(SL.totalDias,CV.totalDias);
 
-let auxPorDia=auxTotal/totalDias;
+if(maiorDias===0){
+alert("Informe pelo menos uma diária.");
+return;
+}
+
+let valorBaseDia=auxTotal/maiorDias;
+
+let diasComuns=Math.min(SL.totalDias,CV.totalDias);
+let diasExSL=SL.totalDias-diasComuns;
+let diasExCV=CV.totalDias-diasComuns;
 
 let auxSL=0;
 let auxCV=0;
 
-if(SL.totalDias>CV.totalDias){
-let diff=SL.totalDias-CV.totalDias;
-auxSL+=(diff*auxPorDia*0.7);
-auxCV+=(diff*auxPorDia*0.3);
-}
+auxSL+=diasComuns*(valorBaseDia*0.5);
+auxCV+=diasComuns*(valorBaseDia*0.5);
 
-if(CV.totalDias>SL.totalDias){
-let diff=CV.totalDias-SL.totalDias;
-auxCV+=(diff*auxPorDia*0.7);
-auxSL+=(diff*auxPorDia*0.3);
-}
+auxSL+=diasExSL*(valorBaseDia*0.7);
+auxCV+=diasExSL*(valorBaseDia*0.3);
 
-let comum=Math.min(SL.totalDias,CV.totalDias);
-auxSL+=(comum*auxPorDia*0.5);
-auxCV+=(comum*auxPorDia*0.5);
+auxCV+=diasExCV*(valorBaseDia*0.7);
+auxSL+=diasExCV*(valorBaseDia*0.3);
 
 let liquidoSL=SL.total-auxSL-(parseFloat(passSL.value)||0);
 let liquidoCV=CV.total-auxCV-(parseFloat(passCV.value)||0);
 
-let valorIntegralSL=liquidoSL/(parseFloat(intSL.value)||1);
-let valorIntegralCV=liquidoCV/(parseFloat(intCV.value)||1);
+let alunosSL=parseFloat(intSL.value)||1;
+let alunosCV=parseFloat(intCV.value)||1;
 
-let valorDescSL=valorIntegralSL-(valorIntegralSL*(parseFloat(descSL.value)||0)/100);
-let valorDescCV=valorIntegralCV-(valorIntegralCV*(parseFloat(descCV.value)||0)/100);
+let valorIntegralSL=liquidoSL/alunosSL;
+let valorIntegralCV=liquidoCV/alunosCV;
+
+let descontoSL=parseFloat(descSL.value)||0;
+let descontoCV=parseFloat(descCV.value)||0;
+
+let valorDescSL=valorIntegralSL-(valorIntegralSL*descontoSL/100);
+let valorDescCV=valorIntegralCV-(valorIntegralCV*descontoCV/100);
 
 document.getElementById("cadastro").classList.remove("active");
 document.getElementById("resultado").classList.add("active");
 
-document.getElementById("resultadoTexto").innerHTML=`
-<table>
-<tr><th></th><th>Sete Lagoas</th><th>Curvelo</th></tr>
-<tr><td>Dias Rodados</td><td>${SL.totalDias}</td><td>${CV.totalDias}</td></tr>
-<tr><td>Valor Bruto</td><td>R$ ${SL.total.toFixed(2)}</td><td>R$ ${CV.total.toFixed(2)}</td></tr>
-<tr><td>Auxílio Recebido</td><td>R$ ${auxSL.toFixed(2)}</td><td>R$ ${auxCV.toFixed(2)}</td></tr>
-<tr><td>Valor Integral</td><td>R$ ${valorIntegralSL.toFixed(2)}</td><td>R$ ${valorIntegralCV.toFixed(2)}</td></tr>
-<tr><td>Valor com Desconto</td><td>R$ ${valorDescSL.toFixed(2)}</td><td>R$ ${valorDescCV.toFixed(2)}</td></tr>
-</table>
-`;
+document.getElementById("relatorio").innerHTML=`
 
-new Chart(grafico,{
-type:"bar",
-data:{
-labels:["Sete Lagoas","Curvelo"],
-datasets:[{
-label:"Valor por Aluno Integral",
-data:[valorIntegralSL,valorIntegralCV]
-}]
-}
-});
+<h3>1) Cálculo Base</h3>
+Auxílio Total ÷ Maior número de diárias<br>
+${auxTotal} ÷ ${maiorDias} = ${valorBaseDia.toFixed(2)}
+
+<h3>2) Dias</h3>
+Dias em comum: ${diasComuns}<br>
+Excedentes SL: ${diasExSL}<br>
+Excedentes CV: ${diasExCV}
+
+<h3>3) Auxílio Final</h3>
+Sete Lagoas: R$ ${auxSL.toFixed(2)}<br>
+Curvelo: R$ ${auxCV.toFixed(2)}
+
+<h3>4) Valor Bruto</h3>
+SL: R$ ${SL.total.toFixed(2)}<br>
+CV: R$ ${CV.total.toFixed(2)}
+
+<h3>5) Valor Líquido</h3>
+SL: R$ ${liquidoSL.toFixed(2)}<br>
+CV: R$ ${liquidoCV.toFixed(2)}
+
+<h3>6) Valor por Aluno</h3>
+Integral SL: R$ ${valorIntegralSL.toFixed(2)}<br>
+Integral CV: R$ ${valorIntegralCV.toFixed(2)}<br>
+Com desconto SL: R$ ${valorDescSL.toFixed(2)}<br>
+Com desconto CV: R$ ${valorDescCV.toFixed(2)}
+`;
 }
 
 function gerarPDF(){
-const { jsPDF } = window.jspdf;
+const { jsPDF }=window.jspdf;
 let doc=new jsPDF();
-doc.text("Relatório Transporte Universitário",10,10);
-doc.text(document.getElementById("resultadoTexto").innerText,10,20);
-doc.save("relatorio.pdf");
+doc.text("Relatório Completo de Transparência",10,10);
+doc.text(document.getElementById("relatorio").innerText,10,20);
+doc.save("relatorio_transporte.pdf");
 }
