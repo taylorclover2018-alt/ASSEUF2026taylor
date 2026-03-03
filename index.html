@@ -7,38 +7,68 @@
 
 <link rel="stylesheet" href="style.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 
 <body>
 
 <div class="container">
 
-<h1>Sistema Oficial de Prestação de Contas</h1>
+<h1>Sistema Oficial de Distribuição de Auxílio</h1>
 
-<div class="card">
+<div id="etapa1" class="etapa ativa">
+<h2>Etapa 1 - Introdução</h2>
+<p>
+Este sistema realiza a distribuição do auxílio de forma proporcional
+ao valor financeiro real de cada rota.
+</p>
+
+<ul>
+<li>Baseado em diária × quantidade de dias</li>
+<li>Distribuição proporcional</li>
+<li>Proteção contra divisão por zero</li>
+</ul>
+
+<button onclick="proximaEtapa(1)">Iniciar</button>
+</div>
+
+<div id="etapa2" class="etapa">
+<h2>Etapa 2 - Cadastro do Auxílio</h2>
+
 <label>Mês de Referência</label>
 <input type="month" id="mes">
+
+<label>Valor Total do Auxílio</label>
+<input type="number" id="auxilio">
+
+<button onclick="validarEtapa2()">Próxima Etapa</button>
 </div>
 
-<div class="card">
-<label>Valor Total do Auxílio (R$)</label>
-<input type="number" id="auxilio" placeholder="Ex: 15000">
-</div>
+<div id="etapa3" class="etapa">
+<h2>Etapa 3 - Cadastro das Rotas</h2>
 
-<h2>Rotas</h2>
 <div id="rotas"></div>
+<button onclick="adicionarRota()">Adicionar Rota</button>
 
-<button onclick="adicionarRota()">+ Adicionar Rota</button>
+<button onclick="proximaEtapa(3)">Próxima Etapa</button>
+</div>
 
-<button class="calcular" onclick="calcular()">Calcular Distribuição</button>
+<div id="etapa4" class="etapa">
+<h2>Etapa 4 - Resultado</h2>
 
 <div id="resultado"></div>
 
-<canvas id="graficoFinanceiro"></canvas>
-<canvas id="graficoPercentual"></canvas>
+<canvas id="graficoBarra"></canvas>
+<canvas id="graficoPizza"></canvas>
 
-<button class="pdf" onclick="gerarPDF()">Gerar PDF Oficial</button>
+<button onclick="proximaEtapa(4)">Gerar Relatório</button>
+</div>
+
+<div id="etapa5" class="etapa">
+<h2>Etapa 5 - Relatório Oficial</h2>
+
+<div id="relatorio"></div>
+
+</div>
 
 </div>
 
