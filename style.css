@@ -4,10 +4,6 @@ body{
     padding:20px;
 }
 
-h1{
-    text-align:center;
-}
-
 .card{
     background:white;
     padding:15px;
@@ -16,29 +12,20 @@ h1{
     box-shadow:0 2px 5px rgba(0,0,0,0.1);
 }
 
-input{
-    padding:5px;
-    margin-top:5px;
-}
-
 button{
     padding:10px 15px;
-    margin-top:10px;
     background:#007bff;
     color:white;
     border:none;
     border-radius:5px;
     cursor:pointer;
-}
-
-button:hover{
-    background:#0056b3;
+    margin-right:10px;
 }
 
 table{
     width:100%;
     border-collapse:collapse;
-    margin-top:30px;
+    margin-top:20px;
 }
 
 th,td{
