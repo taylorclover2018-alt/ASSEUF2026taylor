@@ -1,116 +1,103 @@
-function irCadastro(){
-document.getElementById("home").classList.remove("active");
-document.getElementById("cadastro").classList.add("active");
-}
+let rotas = [];
+let graficoBarra;
+let graficoPizza;
 
-function voltar(){
-document.getElementById("resultado").classList.remove("active");
-document.getElementById("cadastro").classList.add("active");
-}
+function adicionarRota() {
 
-function addVeiculo(tipo){
-let div=document.createElement("div");
-div.innerHTML=`
-<input placeholder="Nome do veículo">
-<input type="number" class="valor" placeholder="Valor da diária">
-<input type="number" class="dias" placeholder="Dias utilizados">
-`;
-document.getElementById(tipo==="SL"?"veiculosSL":"veiculosCV").appendChild(div);
-}
+    const id = rotas.length;
 
-function somar(container){
-let valores=container.querySelectorAll(".valor");
-let dias=container.querySelectorAll(".dias");
-let total=0;
-let totalDias=0;
+    const div = document.createElement("div");
+    div.className = "rotaCard";
 
-for(let i=0;i<valores.length;i++){
-let v=parseFloat(valores[i].value)||0;
-let d=parseFloat(dias[i].value)||0;
-total+=v*d;
-totalDias+=d;
-}
-return{total,totalDias};
+    div.innerHTML = `
+        <h3>Rota ${id+1}</h3>
+        <input type="text" id="nome${id}" placeholder="Nome da rota">
+        <input type="number" id="diaria${id}" placeholder="Valor da diária">
+        <input type="number" id="dias${id}" placeholder="Qtd diárias">
+    `;
+
+    document.getElementById("rotas").appendChild(div);
+    rotas.push(id);
+
+    document.getElementById("kpiRotas").innerText = rotas.length;
 }
 
 function calcular(){
 
-let auxTotal=parseFloat(auxilio.value)||0;
+    const auxilio = parseFloat(document.getElementById("auxilio").value) || 0;
+    let totalGeral = 0;
+    let nomes = [];
+    let valores = [];
 
-let SL=somar(document.getElementById("veiculosSL"));
-let CV=somar(document.getElementById("veiculosCV"));
+    rotas.forEach(id => {
 
-let maiorDias=Math.max(SL.totalDias,CV.totalDias);
+        const nome = document.getElementById(`nome${id}`).value || `Rota ${id+1}`;
+        const diaria = parseFloat(document.getElementById(`diaria${id}`).value) || 0;
+        const dias = parseFloat(document.getElementById(`dias${id}`).value) || 0;
 
-if(maiorDias===0){
-alert("Informe pelo menos uma diária.");
-return;
+        const valor = diaria * dias;
+
+        totalGeral += valor;
+        nomes.push(nome);
+        valores.push(valor);
+    });
+
+    if(totalGeral === 0){
+        alert("Total geral não pode ser zero.");
+        return;
+    }
+
+    document.getElementById("kpiTotal").innerText =
+        "R$ " + totalGeral.toFixed(2);
+
+    document.getElementById("kpiAuxilio").innerText =
+        "R$ " + auxilio.toFixed(2);
+
+    atualizarGraficos(nomes, valores);
 }
 
-let valorBaseDia=auxTotal/maiorDias;
+function atualizarGraficos(nomes, valores){
 
-let diasComuns=Math.min(SL.totalDias,CV.totalDias);
-let diasExSL=SL.totalDias-diasComuns;
-let diasExCV=CV.totalDias-diasComuns;
+    if(graficoBarra) graficoBarra.destroy();
+    if(graficoPizza) graficoPizza.destroy();
 
-let auxSL=0;
-let auxCV=0;
+    graficoBarra = new Chart(
+        document.getElementById("graficoBarra"),
+        {
+            type: 'bar',
+            data: {
+                labels: nomes,
+                datasets: [{
+                    label: "Valor Financeiro",
+                    data: valores
+                }]
+            },
+            options: {
+                animation: {
+                    duration: 1500
+                }
+            }
+        }
+    );
 
-auxSL+=diasComuns*(valorBaseDia*0.5);
-auxCV+=diasComuns*(valorBaseDia*0.5);
-
-auxSL+=diasExSL*(valorBaseDia*0.7);
-auxCV+=diasExSL*(valorBaseDia*0.3);
-
-auxCV+=diasExCV*(valorBaseDia*0.7);
-auxSL+=diasExCV*(valorBaseDia*0.3);
-
-let liquidoSL=SL.total-auxSL-(parseFloat(passSL.value)||0);
-let liquidoCV=CV.total-auxCV-(parseFloat(passCV.value)||0);
-
-let alunosSL=parseFloat(intSL.value)||1;
-let alunosCV=parseFloat(intCV.value)||1;
-
-let valorIntegralSL=liquidoSL/alunosSL;
-let valorIntegralCV=liquidoCV/alunosCV;
-
-let descontoSL=parseFloat(descSL.value)||0;
-let descontoCV=parseFloat(descCV.value)||0;
-
-let valorDescSL=valorIntegralSL-(valorIntegralSL*descontoSL/100);
-let valorDescCV=valorIntegralCV-(valorIntegralCV*descontoCV/100);
-
-document.getElementById("cadastro").classList.remove("active");
-document.getElementById("resultado").classList.add("active");
-
-document.getElementById("relatorio").innerHTML=`
-
-<h3>1) Cálculo Base</h3>
-Auxílio Total ÷ Maior número de diárias<br>
-${auxTotal} ÷ ${maiorDias} = ${valorBaseDia.toFixed(2)}
-
-<h3>2) Dias</h3>
-Dias em comum: ${diasComuns}<br>
-Excedentes SL: ${diasExSL}<br>
-Excedentes CV: ${diasExCV}
-
-<h3>3) Auxílio Final</h3>
-Sete Lagoas: R$ ${auxSL.toFixed(2)}<br>
-Curvelo: R$ ${auxCV.toFixed(2)}
-
-<h3>4) Valor Bruto</h3>
-SL: R$ ${SL.total.toFixed(2)}<br>
-CV: R$ ${CV.total.toFixed(2)}
-
-<h3>5) Valor Líquido</h3>
-SL: R$ ${liquidoSL.toFixed(2)}<br>
-CV: R$ ${liquidoCV.toFixed(2)}
-
-<h3>6) Valor por Aluno</h3>
-Integral SL: R$ ${valorIntegralSL.toFixed(2)}<br>
-Integral CV: R$ ${valorIntegralCV.toFixed(2)}<br>
-Com desconto SL: R$ ${valorDescSL.toFixed(2)}<br>
-Com desconto CV: R$ ${valorDescCV.toFixed(2)}
+    graficoPizza = new Chart(
+        document.getElementById("graficoPizza"),
+        {
+            type: 'pie',
+            data: {
+                labels: nomes,
+                datasets: [{
+                    data: valores
+                }]
+            },
+            options: {
+                animation: {
+                    animateScale: true
+                }
+            }
+        }
+    );
+}Com desconto CV: R$ ${valorDescCV.toFixed(2)}
 `;
 }
 
