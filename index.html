@@ -2,134 +2,232 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sistema Oficial de Prestação de Contas</title>
-
-<link rel="stylesheet" href="style.css">
+<title>Dashboard Transporte Associação</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-</head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
+<style>
+body{
+    font-family: Arial;
+    background:#f4f6f9;
+    padding:20px;
+}
+
+h2{
+    margin-top:40px;
+}
+
+.card{
+    background:white;
+    padding:15px;
+    margin-bottom:20px;
+    border-radius:8px;
+    box-shadow:0 2px 5px rgba(0,0,0,0.1);
+}
+
+button{
+    padding:10px 15px;
+    background:#007bff;
+    color:white;
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:20px;
+}
+
+th,td{
+    border:1px solid #ccc;
+    padding:8px;
+    text-align:center;
+}
+
+th{
+    background:#343a40;
+    color:white;
+}
+
+#graficoContainer{
+    margin-top:40px;
+}
+</style>
+</head>
 <body>
 
-<div class="app">
+<h1>Fechamento Transporte</h1>
 
-<header>
-<h1>Prestação de Contas Oficial</h1>
-<p>Sistema proporcional com regra 70/30 por excedente de dias</p>
-</header>
+<div class="card">
+<label>Auxílio Total:</label>
+<input type="number" id="auxilioTotal" value="4000">
+</div>
 
-<section class="card">
-<h2>Informações Gerais</h2>
-
-<label>Mês de referência</label>
-<input type="month" id="mes">
-
-<label>Valor total do auxílio (R$)</label>
-<input type="number" id="auxilio">
-
-<label>Aplicar regra 70/30 no excedente?</label>
-<select id="usarRegra">
-<option value="sim">Sim</option>
-<option value="nao">Não</option>
-</select>
-</section>
-
-<section class="grid">
-
-<div class="rota card">
+<!-- ROTA 0 -->
+<div class="card">
 <h2>Rota 7 Lagoas</h2>
 
-<label>Valor da passagem</label>
-<input type="number" id="passagem0">
+<label>Dias rodados:</label>
+<input type="number" id="dias0" value="20"><br><br>
 
-<label>Quantidade de veículos</label>
-<input type="number" id="veiculos0">
+<label>Alunos Integrais:</label>
+<input type="number" id="integral0" value="12"><br><br>
 
-<label>Valor da diária por veículo</label>
-<input type="number" id="diaria0">
+<label>Alunos 50%:</label>
+<input type="number" id="desc0" value="2"><br><br>
 
-<label>Dias rodados</label>
-<input type="number" id="dias0">
-
-<label>Alunos integrais</label>
-<input type="number" id="integral0">
-
-<label>Alunos com desconto 1</label>
-<input type="number" id="descAlunos0">
-
-<label>% desconto 1</label>
-<input type="number" id="descPerc0">
-
-<label>Possui desconto 2?</label>
-<select id="temDesc2_0" onchange="toggleDesc2(0)">
-<option value="nao">Não</option>
-<option value="sim">Sim</option>
-</select>
-
-<div id="desc2_0" class="hidden">
-<label>Alunos desconto 2</label>
-<input type="number" id="desc2Alunos0">
-<label>% desconto 2</label>
-<input type="number" id="desc2Perc0">
-</div>
+<label>Quantidade de veículos:</label>
+<input type="number" min="0" value="1" onchange="gerarVeiculos(0,this.value)">
+<div id="veiculos0"></div>
 </div>
 
-<div class="rota card">
+<!-- ROTA 1 -->
+<div class="card">
 <h2>Rota Curvelo</h2>
 
-<label>Valor da passagem</label>
-<input type="number" id="passagem1">
+<label>Dias rodados:</label>
+<input type="number" id="dias1" value="20"><br><br>
 
-<label>Quantidade de veículos</label>
-<input type="number" id="veiculos1">
+<label>Alunos Integrais:</label>
+<input type="number" id="integral1" value="12"><br><br>
 
-<label>Valor da diária por veículo</label>
-<input type="number" id="diaria1">
+<label>Alunos 50%:</label>
+<input type="number" id="desc1" value="2"><br><br>
 
-<label>Dias rodados</label>
-<input type="number" id="dias1">
-
-<label>Alunos integrais</label>
-<input type="number" id="integral1">
-
-<label>Alunos com desconto 1</label>
-<input type="number" id="descAlunos1">
-
-<label>% desconto 1</label>
-<input type="number" id="descPerc1">
-
-<label>Possui desconto 2?</label>
-<select id="temDesc2_1" onchange="toggleDesc2(1)">
-<option value="nao">Não</option>
-<option value="sim">Sim</option>
-</select>
-
-<div id="desc2_1" class="hidden">
-<label>Alunos desconto 2</label>
-<input type="number" id="desc2Alunos1">
-<label>% desconto 2</label>
-<input type="number" id="desc2Perc1">
-</div>
+<label>Quantidade de veículos:</label>
+<input type="number" min="0" value="1" onchange="gerarVeiculos(1,this.value)">
+<div id="veiculos1"></div>
 </div>
 
-</section>
+<button onclick="calcular()">Calcular</button>
+<button onclick="gerarPDF()">Gerar PDF</button>
 
-<button class="btn" onclick="calcular()">Calcular</button>
-<button class="btn verde" onclick="gerarPDF()">Gerar PDF Oficial</button>
+<table id="tabelaResultado">
+<thead>
+<tr>
+<th>Rota</th>
+<th>Total Bruto</th>
+<th>Auxílio</th>
+<th>Total Líquido</th>
+<th>Integral</th>
+<th>50%</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
 
-<section class="card">
-<h2>Resultado</h2>
-<div id="resultado"></div>
-</section>
-
-<section class="charts">
-<canvas id="graficoFinanceiro"></canvas>
-<canvas id="graficoAuxilio"></canvas>
-</section>
-
+<div id="graficoContainer">
+<canvas id="graficoRateio"></canvas>
 </div>
 
-<script src="app.js"></script>
+<script>
+
+function gerarVeiculos(rota, qtd){
+    let container = document.getElementById("veiculos"+rota);
+    container.innerHTML="";
+    for(let i=0;i<qtd;i++){
+        container.innerHTML+=`
+        <div>
+        <h4>Veículo ${i+1}</h4>
+        Nome: <input type="text" id="nome_${rota}_${i}"><br>
+        Diária: <input type="number" id="diaria_${rota}_${i}"><br>
+        Nº Diárias: <input type="number" id="qtd_${rota}_${i}"><br><br>
+        </div>
+        `;
+    }
+}
+
+function calcularTotalRota(rota){
+    let container = document.getElementById("veiculos"+rota);
+    let inputs = container.querySelectorAll("input");
+    let total=0;
+    for(let i=0;i<inputs.length;i+=3){
+        let diaria=parseFloat(inputs[i+1].value)||0;
+        let qtd=parseFloat(inputs[i+2].value)||0;
+        total+=diaria*qtd;
+    }
+    return total;
+}
+
+let grafico;
+
+function calcular(){
+
+let bruto0=calcularTotalRota(0);
+let bruto1=calcularTotalRota(1);
+
+let brutoGeral=bruto0+bruto1;
+let auxTotal=parseFloat(document.getElementById("auxilioTotal").value)||0;
+
+let aux0=(bruto0/brutoGeral)*auxTotal;
+let aux1=(bruto1/brutoGeral)*auxTotal;
+
+let liquido0=bruto0-aux0;
+let liquido1=bruto1-aux1;
+
+let integral0=parseInt(document.getElementById("integral0").value)||0;
+let desc0=parseInt(document.getElementById("desc0").value)||0;
+
+let integral1=parseInt(document.getElementById("integral1").value)||0;
+let desc1=parseInt(document.getElementById("desc1").value)||0;
+
+let valorInt0=liquido0/(integral0+(desc0*0.5));
+let valorDesc0=valorInt0/2;
+
+let valorInt1=liquido1/(integral1+(desc1*0.5));
+let valorDesc1=valorInt1/2;
+
+let tbody=document.querySelector("#tabelaResultado tbody");
+tbody.innerHTML=`
+<tr>
+<td>7 Lagoas</td>
+<td>R$ ${bruto0.toFixed(2)}</td>
+<td>R$ ${aux0.toFixed(2)}</td>
+<td>R$ ${liquido0.toFixed(2)}</td>
+<td>R$ ${valorInt0.toFixed(2)}</td>
+<td>R$ ${valorDesc0.toFixed(2)}</td>
+</tr>
+<tr>
+<td>Curvelo</td>
+<td>R$ ${bruto1.toFixed(2)}</td>
+<td>R$ ${aux1.toFixed(2)}</td>
+<td>R$ ${liquido1.toFixed(2)}</td>
+<td>R$ ${valorInt1.toFixed(2)}</td>
+<td>R$ ${valorDesc1.toFixed(2)}</td>
+</tr>
+`;
+
+if(grafico) grafico.destroy();
+
+grafico=new Chart(document.getElementById("graficoRateio"),{
+type:"bar",
+data:{
+labels:["7 Lagoas","Curvelo"],
+datasets:[{
+label:"Total Líquido",
+data:[liquido0,liquido1]
+}]
+}
+});
+}
+
+async function gerarPDF(){
+const { jsPDF } = window.jspdf;
+let doc=new jsPDF();
+
+doc.text("Relatório Oficial de Fechamento",20,20);
+
+let linhas=document.querySelector("#tabelaResultado").innerText;
+doc.text(linhas,20,40);
+
+doc.save("Relatorio_Transporte.pdf");
+}
+
+gerarVeiculos(0,1);
+gerarVeiculos(1,1);
+
+</script>
 </body>
 </html>
