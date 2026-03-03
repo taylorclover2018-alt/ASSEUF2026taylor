@@ -3,91 +3,59 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Transparência Transporte Universitário</title>
+<title>Dashboard Financeiro Oficial</title>
 
 <link rel="stylesheet" href="style.css">
-
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 
 <body>
 
-<div class="container">
+<div class="layout">
 
-<section id="home" class="active">
-<h1>Transparência do Transporte Universitário</h1>
+    <aside class="sidebar">
+        <h2>Financeiro</h2>
+        <p>Sistema Oficial</p>
+    </aside>
 
-<p>
-Este sistema foi criado para informar de forma clara e imparcial os valores
-das rotas de <strong>Sete Lagoas</strong> e <strong>Curvelo</strong>.
-</p>
+    <main class="main">
 
-<p>
-A divisão do auxílio considera:
-</p>
+        <header>
+            <h1>Dashboard de Prestação de Contas</h1>
+        </header>
 
-<ul>
-<li>Valor real das diárias</li>
-<li>Número de dias rodados</li>
-<li>Regra 70% para quem rodou sozinho</li>
-<li>30% para quem não rodou naquele dia</li>
-<li>50% para cada quando ambas rodaram</li>
-</ul>
+        <section class="kpis">
+            <div class="kpi">
+                <h3>Total Geral</h3>
+                <p id="kpiTotal">R$ 0,00</p>
+            </div>
 
-<button class="btn-primary" onclick="irCadastro()">Iniciar</button>
-</section>
+            <div class="kpi">
+                <h3>Total Auxílio</h3>
+                <p id="kpiAuxilio">R$ 0,00</p>
+            </div>
 
-<section id="cadastro">
+            <div class="kpi">
+                <h3>Rotas</h3>
+                <p id="kpiRotas">0</p>
+            </div>
+        </section>
 
-<h2>Cadastro de Dados</h2>
+        <section class="formulario">
+            <input type="number" id="auxilio" placeholder="Valor total do auxílio">
+            <button onclick="adicionarRota()">Adicionar Rota</button>
+        </section>
 
-<div class="card">
-<label>Período:</label>
-<input type="month" id="periodo">
+        <div id="rotas"></div>
 
-<label>Valor Total de Auxílio:</label>
-<input type="number" id="auxilio">
-</div>
+        <button class="btnCalcular" onclick="calcular()">Calcular</button>
 
-<div class="grid">
+        <section class="graficos">
+            <canvas id="graficoBarra"></canvas>
+            <canvas id="graficoPizza"></canvas>
+        </section>
 
-<div class="card">
-<h3>Rota Sete Lagoas</h3>
-<div id="veiculosSL"></div>
-<button class="btn-secondary" onclick="addVeiculo('SL')">Adicionar Veículo</button>
-
-<input type="number" id="passSL" placeholder="Valor total de passagens">
-<input type="number" id="intSL" placeholder="Alunos integrais">
-<input type="number" id="descSL" placeholder="% Desconto">
-</div>
-
-<div class="card">
-<h3>Rota Curvelo</h3>
-<div id="veiculosCV"></div>
-<button class="btn-secondary" onclick="addVeiculo('CV')">Adicionar Veículo</button>
-
-<input type="number" id="passCV" placeholder="Valor total de passagens">
-<input type="number" id="intCV" placeholder="Alunos integrais">
-<input type="number" id="descCV" placeholder="% Desconto">
-</div>
-
-</div>
-
-<button class="btn-primary" onclick="calcular()">Calcular</button>
-
-</section>
-
-<section id="resultado">
-<h2>Relatório Completo</h2>
-
-<div id="relatorio"></div>
-
-<button class="btn-primary" onclick="gerarPDF()">Baixar PDF</button>
-<button class="btn-secondary" onclick="voltar()">Novo Cálculo</button>
-
-</section>
-
+    </main>
 </div>
 
 <script src="app.js"></script>
