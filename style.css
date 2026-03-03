@@ -1,94 +1,61 @@
 body {
-    margin: 0;
     font-family: 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg,#141e30,#243b55);
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    margin: 0;
+    padding: 0;
     color: white;
 }
 
-.layout {
-    display: flex;
+.container {
+    max-width: 1000px;
+    margin: auto;
+    padding: 20px;
 }
 
-.sidebar {
-    width: 220px;
-    background: rgba(0,0,0,0.4);
-    padding: 20px;
-    height: 100vh;
+h1, h2 {
+    text-align: center;
+}
+
+.card {
+    background: rgba(255,255,255,0.1);
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 12px;
     backdrop-filter: blur(10px);
 }
 
-.main {
-    flex: 1;
-    padding: 30px;
-}
-
-.kpis {
-    display: flex;
-    gap: 20px;
-    margin-bottom: 20px;
-}
-
-.kpi {
-    flex: 1;
-    background: rgba(255,255,255,0.1);
-    padding: 20px;
-    border-radius: 15px;
-    text-align: center;
-    animation: fadeIn 0.6s ease-in-out;
-}
-
-.kpi p {
-    font-size: 22px;
-    font-weight: bold;
-}
-
-.formulario input {
-    padding: 10px;
+input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
     border-radius: 8px;
     border: none;
-    margin-right: 10px;
 }
 
 button {
     padding: 10px 15px;
-    border-radius: 8px;
+    border-radius: 10px;
     border: none;
+    margin: 10px 5px;
     cursor: pointer;
-    background: #00c6ff;
     font-weight: bold;
 }
 
+button.calcular {
+    background: #00c6ff;
+}
+
+button.pdf {
+    background: #00ff9d;
+}
+
 button:hover {
-    transform: scale(1.05);
-    transition: 0.3s;
+    opacity: 0.9;
 }
 
-.rotaCard {
-    background: rgba(255,255,255,0.08);
+#resultado {
+    background: rgba(0,0,0,0.3);
     padding: 15px;
-    border-radius: 12px;
-    margin: 10px 0;
-    animation: slideUp 0.4s ease-in-out;
-}
-
-.graficos {
-    display: flex;
-    gap: 20px;
-    margin-top: 30px;
-}
-
-canvas {
-    background: white;
-    border-radius: 12px;
-    padding: 10px;
-}
-
-@keyframes fadeIn {
-    from {opacity:0;}
-    to {opacity:1;}
-}
-
-@keyframes slideUp {
-    from {transform:translateY(20px); opacity:0;}
-    to {transform:translateY(0); opacity:1;}
+    margin-top: 15px;
+    border-radius: 10px;
 }
